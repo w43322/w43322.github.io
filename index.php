@@ -1,0 +1,272 @@
+<?php
+
+function getBrowser(){
+    $agent=$_SERVER["HTTP_USER_AGENT"];
+    if(strpos($agent,'MSIE')!==false || strpos($agent,'rv:11.0')) //ie11判断
+    return "ie";
+    else if(strpos($agent,'Firefox')!==false)
+    return "firefox";
+    else if(strpos($agent,'Chrome')!==false)
+    return "chrome";
+    else if(strpos($agent,'Opera')!==false)
+    return 'opera';
+	else if(strpos($agent,'AppleWebKit')!==false)
+    return 'AppleWebKit';
+    else if((strpos($agent,'Chrome')==false)&&strpos($agent,'Safari')!==false)
+    return 'safari';
+    else 
+    return 'unknown';
+}
+
+function getBrowserVer(){
+    if (empty($_SERVER['HTTP_USER_AGENT'])){    //当浏览器没有发送访问者的信息的时候
+        return 'unknow';
+    }
+    $agent= $_SERVER['HTTP_USER_AGENT'];   
+    if (preg_match('/MSIE\s(\d+)\..*/i', $agent, $regs))
+        return $regs[1];
+    elseif (preg_match('/FireFox\/(\d+)\..*/i', $agent, $regs))
+        return $regs[1];
+    elseif (preg_match('/Opera[\s|\/](\d+)\..*/i', $agent, $regs))
+        return $regs[1];
+    elseif (preg_match('/Chrome\/(\d+)\..*/i', $agent, $regs))
+        return $regs[1];
+    elseif ((strpos($agent,'Chrome')==false)&&preg_match('/Safari\/(\d+)\..*$/i', $agent, $regs))
+        return $regs[1];
+    else
+        return 'unknow';
+}
+ob_start();
+/*
+if(getBrowser()!="chrome" && (!isset($_GET['force'])))
+{
+	die("浏览器测试失败！<br />我们推荐使用Chrome浏览器访问本站。使用其他浏览器可能导致界面错位，视频无法播放的问题。<br />如果您在使用QQ或微信内置的浏览器，请通过右侧菜单按钮选择“在浏览器中打开”。<br />您也可以选择<a href='?force=true'>强制继续</a><br />");
+}
+*/
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta http-equiv="x-ua-compatible" content="ie=edge">
+
+    <title>Ether of Firmament 苍空之穹</title>
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="//cdn.bootcss.com/font-awesome/4.6.0/css/font-awesome.min.css">
+
+    <!-- Bootstrap core CSS -->
+    <link href="css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Material Design Bootstrap -->
+    <link href="css/mdb.min.css" rel="stylesheet">
+
+    <!-- Template styles -->
+    <style rel="stylesheet">
+        /* TEMPLATE STYLES */
+
+        html,
+        body,
+        .view {
+            height: 100%;
+        }
+        /* Navigation*/
+
+        .navbar {
+            background-color: transparent;
+        }
+
+        .scrolling-navbar {
+            -webkit-transition: background .5s ease-in-out, padding .5s ease-in-out;
+            -moz-transition: background .5s ease-in-out, padding .5s ease-in-out;
+            transition: background .5s ease-in-out, padding .5s ease-in-out;
+        }
+
+        .top-nav-collapse {
+            background-color: #1C2331;
+        }
+
+        footer.page-footer {
+            background-color: #1C2331;
+            margin-top: -1px;
+        }
+
+        @media only screen and (max-width: 768px) {
+            .navbar {
+                background-color: transparent;
+                /*#1C2331;*/
+            }
+        }
+        Call to action*/
+
+        .flex-center {
+            color: #ffffff;
+        }
+
+        .view {
+            background: url("https://eofirmament.com/eofirmament1.png")no-repeat center center fixed;
+            -webkit-background-size: cover;
+            -moz-background-size: cover;
+            -o-background-size: cover;
+            background-size: cover;
+        }
+    </style>
+
+</head>
+
+
+
+
+
+<!--Navbar-->
+<nav class="navbar navbar-dark navbar-fixed-top scrolling-navbar">
+
+    <!-- Collapse button-->
+    <button class="navbar-toggler hidden-sm-up" type="button" data-toggle="collapse" data-target="#collapseEx">
+        <i class="fa fa-bars"></i>
+    </button>
+
+    <div class="container">
+
+        <!--Collapse content-->
+        <div class="collapse navbar-toggleable-xs" id="collapseEx">
+                <!--Navbar Brand-->
+               <!-- <a class="navbar-brand" href="https://eofirmament.com" target="_blank">最新发布</a>-->
+                <!--Links-->
+                <ul class="nav navbar-nav">
+                    <li class="nav-item">
+                        <a class="nav-link" href="https://news.eofirmament.com/">最新发布<br>The Latest</a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a data-target="#" class="dropdown nav-link" data-toggle="dropdown">在线观看<br>Watch Online
+                            <b class="caret"></b></a>
+                        <ul class="dropdown-menu" ID="666">
+                            <li><a href="http://space.bilibili.com/18405090">bilibili发布页</a></li>
+                            <li><a href="http://www.acfun.cn/u/6876920.aspx">Acfun发布页</a></li>
+                            <li><a href="javascript:void(0)">Youtube发布页</a></li>
+                        </ul>
+
+                    </li>
+
+                    <li class="nav-item">
+                        <a class="nav-link" href=" https://news.eofirmament.com/index.php/about">关于我们<br>About us</a>
+                    </li>
+					
+					<li class="nav-item">
+                        <a class="nav-link" href=" https://news.eofirmament.com/index.php/join">加入我们<br>Join us</a>
+                    </li>
+
+
+
+
+                </ul>
+                <!--Search form
+                <form class="form-inline">
+                    <input class="form-control" type="text" placeholder="Search">
+                </form>
+				-->
+
+            <!--/.Collapse content-->
+
+
+
+
+    </nav>
+    <!--/.Navbar-->
+
+    <!--Mask-->
+    <div class="view hm-black-strong">
+        <div class="full-bg-img flex-center">
+            <ul class="animated fadeInUp">
+                <li>
+
+                <li>
+                    <font color="white"><h1 class="h1-responsive">Ether of Firmament 苍空之穹</h1></font></li>
+                <li>
+                    <font color="white"><p>原创航空纪录片系列/跨平台航空媒体企划</p></font>
+                </li>
+                    <!-- <div>
+                    <h1 class="h1-responsive"><img src="/WebFront.png"  height="200" width="501.5"  alt="Ether of Firmament" /></h1></div></li>
+-->
+                <li>
+                    <!--<a target="_blank" href="http://mdbootstrap.com/getting-started/" class="btn btn-primary btn-lg">Sign up!</a>-->
+					
+                 <!--   <div class="btn-group">
+						<button type="button" class="btn btn-danger" id="select_id" data-toggle="tooltip" data-placement="top" title="请先选择一个直播内容">请选择观看内容</button>
+						<button type="button" class="btn btn-danger dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+							<span class="sr-only">Toggle Dropdown</span>
+						</button>
+
+						<div class="dropdown-menu">
+						
+						<h6 class="dropdown-header">每项最多仅显示2个 超出范围请从“计划”查询</h6>
+
+
+								
+								
+
+							
+						</div>
+                      
+					</div>
+                      -->
+                </li>
+				<li>
+				<a target="_blank" href="https://news.eofirmament.com" class="btn btn-primary btn-lg">最新发布</a>
+				</li>
+				<li>
+				<a target="_blank" href="http://weibo.com/eofirmament" class="btn btn-secondary btn-lg">进入微博</a>
+				</li> 
+				<li>
+					<?php
+						//session_start();
+						//if(!isset($_SESSION['TOKEN']))
+							//echo '<a target="_blank" href="https://login.nfls.io/?url=live&reason=notlogin" class="btn btn-secondary btn-lg">登录账户</a>';
+						?>
+				</li>
+            </ul>
+        </div>
+    </div>
+	<div id="selected_item" style="display:none">-1</div>
+    <!--/.Mask-->
+
+   
+
+
+    <!-- SCRIPTS -->
+
+    <!-- JQuery -->
+    <script type="text/javascript" src="js/jquery-2.2.3.min.js"></script>
+
+    <!-- Bootstrap tooltips -->
+    <script type="text/javascript" src="js/tether.min.js"></script>
+
+    <!-- Bootstrap core JavaScript -->
+    <script type="text/javascript" src="js/bootstrap.min.js"></script>
+
+    <!-- MDB core JavaScript -->
+    <script type="text/javascript" src="js/mdb.min.js"></script>
+	<script>
+    <!-- Dropdown.js -->
+     <script src="https://cdn.rawgit.com/FezVrasta/dropdown.js/master/jquery.dropdown.js"></script>
+    <script>
+    $("#dropdown-menu select").dropdown();
+    </script>
+
+
+
+</body>
+<script>
+  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+  (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+  m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+  })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
+
+  ga('create', 'UA-82277812-7', 'auto');
+  ga('send', 'pageview');
+
+
+</html>
