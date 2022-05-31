@@ -11,5 +11,5 @@ document.getElementById("convert").onclick = () =>
             padding: CryptoJS.pad.ZeroPadding
         }).ciphertext.toString().substr(0, url.length<<1);
     document.getElementById("converted-link").setAttribute("href", res);
-    document.getElementById("converted-link").innerHTML = "用东北大学WebVPN打开" + url;
+    document.getElementById("converted-link").innerHTML = "用东北大学WebVPN打开'" + url + "'";
 }
