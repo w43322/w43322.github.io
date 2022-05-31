@@ -1,9 +1,3 @@
-<html>
-    <style>
-        footer, header {display: none;}
-    </style>
-</html>
-
 # 欢迎来到唐可可的小站
 
 ## 小工具
@@ -11,6 +5,7 @@
 [NEU WebVPN 工具](/webvpn)
 
 ## 课程设计
+
 |  课程   | 链接                  |
 | :-----: | :-------------:      |
 | 计算理论 | [*qTuringMachine*][1] |

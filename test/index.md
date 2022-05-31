@@ -14,9 +14,6 @@
     <head>
         <script src="https://cdn.staticfile.org/crypto-js/3.1.9-1/crypto-js.min.js"></script>
         <script src="webvpn.js"></script>
-        <style>
-            footer, header {display: none;}
-        </style>
     </head>
     <body>
         <div style="display: table; margin-right: auto; margin-left: auto;">
