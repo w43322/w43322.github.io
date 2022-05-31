@@ -1,4 +1,4 @@
-document.getElementById("convert").onclick = () =>
+function convertOnClick()
 {
     const url = document.getElementById("url-input").value;
     const key_iv = CryptoJS.enc.Utf8.parse("wrdvpnisthebest!");

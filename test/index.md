@@ -11,12 +11,17 @@
 ---
 
 <html>
-    <body>
+    <head>
         <script src="https://cdn.staticfile.org/crypto-js/3.1.9-1/crypto-js.min.js"></script>
         <script src="webvpn.js"></script>
+        <style>
+            footer {display: none;}
+        </style>
+    </head>
+    <body>
         <div style="display: table; margin-right: auto; margin-left: auto;">
             <input value="neu.edu.cn" type="text" id="url-input">
-            <button id="convert">获取链接</button>
+            <button id="convert" onclick="convertOnClick()">获取链接</button>
             <br>
             <a id="converted-link" href="https://neu.edu.cn/">用东北大学WebVPN打开'neu.edu.cn'</a>
         </div>
