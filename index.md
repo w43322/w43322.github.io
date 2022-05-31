@@ -1,6 +1,6 @@
 <html>
     <style>
-        footer {display: none;}
+        footer, header {display: none;}
     </style>
 </html>
 
@@ -8,7 +8,7 @@
 
 ## 小工具
 
-[NEU WebVPN 工具](/webvpn/)
+[NEU WebVPN 工具](/webvpn)
 
 ## 课程设计
 |  课程   | 链接                  |

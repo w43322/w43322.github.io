@@ -15,7 +15,7 @@
         <script src="https://cdn.staticfile.org/crypto-js/3.1.9-1/crypto-js.min.js"></script>
         <script src="webvpn.js"></script>
         <style>
-            footer {display: none;}
+            footer, header {display: none;}
         </style>
     </head>
     <body>
