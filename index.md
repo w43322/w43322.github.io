@@ -1,4 +1,8 @@
-<style>header, footer {display: none;}</style>
+<html>
+    <head>
+        <style>header, footer {display: none;}</style>
+    </head>
+</html>
 
 # 唐可可的小站
 

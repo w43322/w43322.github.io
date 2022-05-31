@@ -1,3 +1,9 @@
+<html>
+    <head>
+        <style>header, footer {display: none;}</style>
+    </head>
+</html>
+
 # NEU WebVPN 工具
 
 ---
