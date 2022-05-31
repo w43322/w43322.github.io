@@ -1,3 +1,10 @@
+<html>
+    <head>
+        <style>header, footer {display: none;}</style>
+    </head>
+</html>
+
+
 # 欢迎来到唐可可的小站
 
 ## 小工具
