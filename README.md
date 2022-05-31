@@ -1,37 +1,27 @@
-## Welcome to GitHub Pages
+<html>
+    <style>
+        footer {display: none;}
+    </style>
+</html>
 
-You can use the [editor on GitHub](https://github.com/w43322/w43322.github.io/edit/main/README.md) to maintain and preview the content for your website in Markdown files.
+# 欢迎来到唐可可的小站
 
-Whenever you commit to this repository, GitHub Pages will run [Jekyll](https://jekyllrb.com/) to rebuild the pages in your site, from the content in your Markdown files.
+## 小工具
 
-### Markdown
+[NEU WebVPN 工具](https://github.com/w43322/c_osu_desu)
 
-Markdown is a lightweight and easy-to-use syntax for styling your writing. It includes conventions for
+## 课程设计
+|  课程   | 链接                  |
+| :-----: | :-------------:      |
+| 计算理论 | [*qTuringMachine*][1] |
+| C语言   | [*c_osu_desu*][2]     |
+| C++    | [*q2048Klotski*][3]   |
+| 算法    | WIP                   |
 
-```markdown
-Syntax highlighted code block
+---
 
-# Header 1
-## Header 2
-### Header 3
+<div style="text-align:center">©️ 2022 Tang Kuku</div>
 
-- Bulleted
-- List
-
-1. Numbered
-2. List
-
-**Bold** and _Italic_ and `Code` text
-
-[Link](url) and ![Image](src)
-```
-
-For more details see [Basic writing and formatting syntax](https://docs.github.com/en/github/writing-on-github/getting-started-with-writing-and-formatting-on-github/basic-writing-and-formatting-syntax).
-
-### Jekyll Themes
-
-Your Pages site will use the layout and styles from the Jekyll theme you have selected in your [repository settings](https://github.com/w43322/w43322.github.io/settings/pages). The name of this theme is saved in the Jekyll `_config.yml` configuration file.
-
-### Support or Contact
-
-Having trouble with Pages? Check out our [documentation](https://docs.github.com/categories/github-pages-basics/) or [contact support](https://support.github.com/contact) and we’ll help you sort it out.
+[1]: https://github.com/w43322/qTuringMachine
+[2]: https://github.com/w43322/c_osu_desu
+[3]: https://github.com/w43322/q2048Klotski
