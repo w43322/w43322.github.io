@@ -1,4 +1,8 @@
+<style>header, footer {display: none;}</style>
+
 # 唐可可的小站
+
+---
 
 ## 小工具
 
