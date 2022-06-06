@@ -14,16 +14,21 @@
 ABCDE ABCDE
 ```
 
-## Sky Vector
+## TAF
 
----
 
 <html>
     <head>
-        <script src="//skyvector.com/api/lchart?ll=-5.515388114149874,130.07812500425922&amp;s=14&amp;c=sv_8523&amp;i=304" type="text/javascript"></script>
+        <script src="https://cdn.staticfile.org/crypto-js/3.1.9-1/crypto-js.min.js"></script>
+        <script src="webvpn.js"></script>
     </head>
     <body>
-        <div id="sv_8523" style="width: 200px; height: 200px;">Make your <a href="https://skyvector.com/">Flight Plan</a> at SkyVector.com</div>
+        <iframe id="inlineFrameExample"
+        title="Inline Frame Example"
+        width="300"
+        height="200"
+        src="https://www.aviationweather.gov/taf/board?ids=KBOS,VNKT">
+        </iframe>
     </body>
 </html>
 
