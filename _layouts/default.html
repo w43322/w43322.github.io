@@ -68,5 +68,12 @@
       <div style="text-align:center">©️ 2022 Tang Kuku</div>
     </footer>
 
+    <!--text expand-->
+    <script>
+      var elements = document.querySelectorAll('div.expand');
+      Array.prototype.forEach.call(elements, function(el, i){
+          el.previousElementSibling.innerHTML = el.previousElementSibling.innerHTML + '<span>..&nbsp; <a href="#" style="cursor: pointer;" onclick="this.parentNode.parentNode.nextElementSibling.style.display = \'block\'; this.parentNode.parentNode.nextElementSibling.style.height = \'auto\'; this.parentNode.style.display = \'none\';">read&nbsp;more&nbsp;&rarr;</a></span>';
+      });
+    </script>
   </body>
 </html>
