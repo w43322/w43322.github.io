@@ -27,13 +27,13 @@ github:
 
 * 胜率
 
-|达成的格子最大值|概率|
-|:-----------:|:-:|
-|2048        |100%|
-|4096        |100%|
-|8192        |100%|
-|16384        |94%|
-|32768        |36%|
+  |达成的格子最大值|概率|
+  |:-----------:|:-:|
+  |2048        |100%|
+  |4096        |100%|
+  |8192        |100%|
+  |16384        |94%|
+  |32768        |36%|
 
 ### 总体设计
 
@@ -50,15 +50,15 @@ github:
 * 两个游戏共用官方2048游戏的配色，使用QSS实现，方便增加新配色
 
   ```cpp
-    const QString COMMON_STYLE = "qproperty-alignment: AlignCenter; font-family: Menlo; font-weight: bold;";
-    const QStringList LABEL_STYLES = {
-        "background: #cdc1b4; color: #776e65;", // 0,  1
-        "background: #eee4da; color: #776e65;", // 1,  2
-        "background: #eee1c9; color: #776e65;", // 2,  4
-        "background: #f3b27a; color: #f9f6f2;", // 3,  8
-        /* ...... */
-        "background: #3c3a33; color: #f9f6f2;"  // 15, 32768
-    };
+  const QString COMMON_STYLE = "qproperty-alignment: AlignCenter; font-family: Menlo; font-weight: bold;";
+  const QStringList LABEL_STYLES = {
+    "background: #cdc1b4; color: #776e65;", // 0,  1
+    "background: #eee4da; color: #776e65;", // 1,  2
+    "background: #eee1c9; color: #776e65;", // 2,  4
+    "background: #f3b27a; color: #f9f6f2;", // 3,  8
+    /* ...... */
+    "background: #3c3a33; color: #f9f6f2;"  // 15, 32768
+  };
   ```
 
 ### 其他
@@ -69,7 +69,7 @@ github:
 
 * 2048游戏可以自由选择棋盘大小
 
-  <img src="./2048_non_4by4.png" style="height:300px;"/>
+  <img src="./2048_non_4by4.png" style="width:375px;"/>
 
 * 华容道游戏可自定义棋盘
 
