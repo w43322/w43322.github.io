@@ -1,3 +1,8 @@
+---
+github:
+  is_user_page: true
+---
+
 ## 小工具
 
 [NEU WebVPN 工具](/webvpn)
