@@ -15,13 +15,13 @@ github:
 
 ### [单带图灵机模拟器](/qTuringMachine) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/Qt-Green">
 
-### [小型中英文搜索引擎](/algoSearchEngine) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/CLI-green"> <img src="https://img.shields.io/badge/Jieba-blue">
-
 ### [单周期armv7处理器](/single-cycle-armv7-processor) <img src="https://img.shields.io/badge/Verilog-purple"> <img src="https://img.shields.io/badge/FPGA-orange">
 
 ### [哈夫曼编码实现压缩软件](/huffman-compressor) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/Qt-Green">
 
-### [LR0、LL1语法分析器](/lr0-ll1-parser) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/CLI-green">
+#### [小型中英文搜索引擎](/algoSearchEngine) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/CLI-green"> <img src="https://img.shields.io/badge/Jieba-blue">
+
+#### [LR0、LL1语法分析器](/lr0-ll1-parser) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/CLI-green">
 
 ## 小工具
 

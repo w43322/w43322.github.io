@@ -17,7 +17,7 @@ github:
 
 ![](./klotski_gameplay.gif)
 
-## 亮点
+## 实现细节总结
 
 ### AI
 
