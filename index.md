@@ -1,13 +1,3 @@
-<html>
-    <head>
-        <style>header, footer {display: none;}</style>
-    </head>
-</html>
-
-# 唐可可的小站desu
-
----
-
 ## 小工具
 
 [NEU WebVPN 工具](/webvpn)
