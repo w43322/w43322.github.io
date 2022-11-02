@@ -1,3 +1,10 @@
+---
+github:
+  is_project_page: true
+  repository_url: https://github.com/w43322/neu-webvpn-anysite
+  repository_name: neu-webvpn-anysite
+---
+
 # NEU WebVPN 工具
 
 ---
