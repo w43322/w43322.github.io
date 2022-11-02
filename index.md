@@ -3,7 +3,7 @@ github:
   is_user_page: true
 ---
 
-## 竞赛(获奖)作品
+## 竞赛作品
 
 ### [C语言(子集)至armv7编译器](/SysYCompiler) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/CLI-green"> <img src="https://img.shields.io/badge/Antlr-blue">
 
@@ -11,7 +11,7 @@ github:
 
 ### [带AI的2048和华容道小游戏](/q2048Klotski) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/Qt-Green">
 
-### [用C语言实现Osu!音游](/c_osu_desu) <img src="https://img.shields.io/badge/C-purple"> <img src="https://img.shields.io/badge/EasyX-Green">
+### [用C语言实现Osu!音游](/c_osu_desu) <img src="https://img.shields.io/badge/C-purple"> <img src="https://img.shields.io/badge/EasyX-Green"> <img src="https://img.shields.io/badge/WindowsAPI-blue">
 
 ### [单带图灵机模拟器](/qTuringMachine) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/Qt-Green">
 
@@ -19,9 +19,9 @@ github:
 
 ### [哈夫曼编码实现压缩软件](/huffman-compressor) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/Qt-Green">
 
-#### [小型中英文搜索引擎](/algoSearchEngine) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/CLI-green"> <img src="https://img.shields.io/badge/Jieba-blue">
+### [小型中英文搜索引擎](/algoSearchEngine) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/CLI-green"> <img src="https://img.shields.io/badge/Jieba-blue">
 
-#### [LR0、LL1语法分析器](/lr0-ll1-parser) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/CLI-green">
+### [LR0、LL1语法分析器](/lr0-ll1-parser) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/CLI-green">
 
 ## 小工具
 
