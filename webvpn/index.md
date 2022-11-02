@@ -46,7 +46,3 @@ github:
 [帮助改进此页面](https://github.com/w43322/w43322.github.io/pulls)
 
 [给我发邮件](mailto:raywang777@foxmail.com)
-
----
-
-<div style="text-align:center">©️ 2022 Tang Kuku</div>

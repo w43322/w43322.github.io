@@ -11,9 +11,7 @@
 | C++    | [*q2048Klotski*][3]   |
 | 算法    | WIP                   |
 
----
 
-<div style="text-align:center">©️ 2022 Tang Kuku</div>
 
 [1]: https://github.com/w43322/qTuringMachine
 [2]: https://github.com/w43322/c_osu_desu
