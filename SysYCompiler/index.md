@@ -14,20 +14,41 @@ github:
 * C++
 * Arm汇编
 * Antlr
-* 编译原理
+* Linux
+* git
 
 ## 关于
 
 &emsp;&emsp;本项目为2022全国大学生计算机系统能力大赛编译系统设计赛(华为毕昇杯)参赛作品，开发周期为2022年6月至2022年8月。最终该作品在全国总决赛中获得三等奖(特等、一等、二等奖共9支队伍，共153支队伍参赛)。在多数用例中，该作品的优化能力与gcc -O1类似。笔者在团队中主要负责编译器后端(IR至汇编)和部分优化。
 
+## Demo
+
+
+
 ## 答辩PPT
 
+![](./ppt1.SVG)
 
+![](./ppt2.SVG)
+
+![](./ppt3.SVG)
+
+![](./ppt4.SVG)
+
+![](./ppt5.SVG)
+
+![](./ppt6.SVG)
+
+![](./ppt7.SVG)
+
+![](./ppt8.SVG)
+
+![](./ppt9.SVG)
 
 ## 实现细节
 
 <details>
-  <summary><a>使用LLVM所使用的线性扫描算法分配寄存器</a></summary>
+  <summary><u style="color: #2879d0;">使用LLVM所使用的线性扫描算法分配寄存器</u></summary>
 
 {% highlight cpp %}
 // 删除旧变量的分配
@@ -75,7 +96,7 @@ for (auto activeIntervalIndexIt = activeIntervals.begin();
 </details>
 
 <details>
-  <summary><a>生成变量的活跃信息</a></summary>
+  <summary><u style="color: #2879d0;">生成变量的活跃信息</u></summary>
 
 {% highlight cpp %}
 for (auto &&bbPtr : functionPtr->all_blocks) {
@@ -117,7 +138,7 @@ do {
 </details>
 
 <details>
-  <summary><a>使用enum来实现对指令、寄存器等的编号</a></summary>
+  <summary><u style="color: #2879d0;">使用enum来实现对指令、寄存器等的编号</u></summary>
 
 {% highlight cpp %}
 enum REGs {
@@ -133,7 +154,7 @@ static enum AsmBranchType{LT, GE, LE, GT, EQ, NE, AlwaysTrue, AlwaysFalse} b_typ
 </details>
 
 <details>
-  <summary><a>使用LUT高效查找把32位整数拆分成arm中Operand2的最优方式</a></summary>
+  <summary><u style="color: #2879d0;">使用LUT高效查找把32位整数拆分成arm中Operand2的最优方式</u></summary>
 
 {% highlight cpp %}
 const uint32_t operand2_mask_unsigned[] = {
@@ -158,7 +179,7 @@ vector<int32_t> SplitInt(int32_t to_split) {
 </details>
 
 <details>
-  <summary><a>对于与2的次幂相关的乘除模运算优化</a></summary>
+  <summary><u style="color: #2879d0;">对于与2的次幂相关的乘除模运算优化</u></summary>
 
 {% highlight cpp %}
 if (__builtin_popcount(src2.val.i) == 1) { // 2, 4, 8, 16...
