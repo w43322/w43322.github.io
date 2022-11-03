@@ -263,3 +263,11 @@ else if (__builtin_popcount((1 << (32 - __builtin_clz(abs(src2.val.i)))) - abs(s
 ![](./ppt8.SVG)
 
 ![](./ppt9.SVG)
+
+![](./ppt10.SVG)
+
+![](./ppt11.SVG)
+
+![](./ppt12.SVG)
+
+![](./ppt13.SVG)
