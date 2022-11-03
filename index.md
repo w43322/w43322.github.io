@@ -27,8 +27,6 @@ github:
 
 ### [小型中英文搜索引擎](/algoSearchEngine) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/CLI-green"> <img src="https://img.shields.io/badge/Jieba-blue">
 
-### [LR0、LL1语法分析器](/lr0-ll1-parser) <img src="https://img.shields.io/badge/C++-purple"> <img src="https://img.shields.io/badge/CLI-green">
-
 ---
 
 ## 小工具
