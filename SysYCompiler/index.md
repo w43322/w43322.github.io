@@ -26,150 +26,165 @@ github:
 
 ## 实现细节
 
-* 使用LLVM所使用的线性扫描算法分配寄存器
+<details>
+  <summary><a>使用LLVM所使用的线性扫描算法分配寄存器</a></summary>
 
-  {% highlight cpp %}
-  // 删除旧变量的分配
-  for (auto activeIntervalIndexIt = activeIntervals.begin();
-      activeIntervalIndexIt != activeIntervals.end();) {
-    auto rangeEnd = func.LiveInterval.at(*activeIntervalIndexIt).second;
-    bool src_needed = InstNeedsSrcPreserved(func.all_insts[rangeEnd]);
-    if (src_needed && rangeEnd < varRange.first || !src_needed && rangeEnd <= varRange.first) {
-      availRegs.insert(func.AllocationResult.at(*activeIntervalIndexIt));
-      activeIntervalIndexIt = activeIntervals.erase(activeIntervalIndexIt);
-    }
-    else {
-      ++activeIntervalIndexIt;
-    }
+{% highlight cpp %}
+// 删除旧变量的分配
+for (auto activeIntervalIndexIt = activeIntervals.begin();
+    activeIntervalIndexIt != activeIntervals.end();) {
+  auto rangeEnd = func.LiveInterval.at(*activeIntervalIndexIt).second;
+  bool src_needed = InstNeedsSrcPreserved(func.all_insts[rangeEnd]);
+  if (src_needed && rangeEnd < varRange.first || !src_needed && rangeEnd <= varRange.first) {
+    availRegs.insert(func.AllocationResult.at(*activeIntervalIndexIt));
+    activeIntervalIndexIt = activeIntervals.erase(activeIntervalIndexIt);
   }
-  // 给新变量分配寄存器或溢出
-  for (auto activeIntervalIndexIt = activeIntervals.begin();
-      ; ++activeIntervalIndexIt) {
-    // 找到插入位置
-    if (activeIntervalIndexIt == activeIntervals.end()
-      || func.LiveInterval.at(*activeIntervalIndexIt).second > varRange.second)
-    {
-      activeIntervals.insert(activeIntervalIndexIt, varIndex);
-      // 无可用寄存器，把活跃区间右侧最靠后的变量溢出，腾出寄存器
-      if (availRegs.empty()) {
-        auto &&spilled_var_idx = activeIntervals.back();
-        if (varIndex != spilled_var_idx) {
-            availRegs.insert(func.AllocationResult.at(spilled_var_idx));
-            func.AllocationResult.at(spilled_var_idx) = SPILL;
-        }
-        else {
-          func.AllocationResult.insert(make_pair(spilled_var_idx, SPILL));
-        }
-        activeIntervals.pop_back();
+  else {
+    ++activeIntervalIndexIt;
+  }
+}
+// 给新变量分配寄存器或溢出
+for (auto activeIntervalIndexIt = activeIntervals.begin();
+    ; ++activeIntervalIndexIt) {
+  // 找到插入位置
+  if (activeIntervalIndexIt == activeIntervals.end()
+    || func.LiveInterval.at(*activeIntervalIndexIt).second > varRange.second)
+  {
+    activeIntervals.insert(activeIntervalIndexIt, varIndex);
+    // 无可用寄存器，把活跃区间右侧最靠后的变量溢出，腾出寄存器
+    if (availRegs.empty()) {
+      auto &&spilled_var_idx = activeIntervals.back();
+      if (varIndex != spilled_var_idx) {
+        availRegs.insert(func.AllocationResult.at(spilled_var_idx));
+        func.AllocationResult.at(spilled_var_idx) = SPILL;
       }
-      // 分配可用寄存器
-      auto alloc_res = *availRegs.begin();
-      func.AllocationResult.insert(make_pair(varIndex, alloc_res));
-      availRegs.erase(alloc_res);
-      break;
-    }
-  }
-  {% endhighlight %}
-
-* 生成变量的活跃信息
-
-  ```cpp
-  for (auto &&bbPtr : functionPtr->all_blocks) {
-    for (auto &&instPtr : bbPtr->basic_block) {
-      vector <int32_t> src_regids;
-      int32_t dst_regid = INT32_MIN;
-      ProcessInst(src_regids, dst_regid, instPtr);
-      for (auto &&src_regid : src_regids)
-        if (bbPtr->LiveDef.find(src_regid) == bbPtr->LiveDef.end())
-          bbPtr->LiveUse.insert(src_regid);
-      if (dst_regid != INT32_MIN)
-        bbPtr->LiveDef.insert(dst_regid);
-    }
-  }
-  bool liveOutChanged;
-  do {
-    liveOutChanged = false;
-    for (auto &&it = functionPtr->all_blocks.rbegin();
-        it != functionPtr->all_blocks.rend();
-        ++it) {
-      auto &&bPtr = *it;
-      size_t oldSiz = bPtr->LiveOut.size();
-      bPtr->LiveOut.clear();
-      for (auto &&sPair : bPtr->succs) {
-          auto &&sPtr = sPair.second;
-          bPtr->LiveOut.insert(sPtr->LiveIn.begin(), sPtr->LiveIn.end());
+      else {
+        func.AllocationResult.insert(make_pair(spilled_var_idx, SPILL));
       }
-      if (!liveOutChanged && bPtr->LiveOut.size() != oldSiz)
-          liveOutChanged = true;
-      bPtr->LiveIn.clear();
-      set_difference(bPtr->LiveOut.begin(),  bPtr->LiveOut.end(),
-                      bPtr->LiveDef.begin(),  bPtr->LiveDef.end(),
-                      inserter(bPtr->LiveIn, bPtr->LiveIn.begin()));
-      bPtr->LiveIn.insert(bPtr->LiveUse.begin(), bPtr->LiveUse.end());
+      activeIntervals.pop_back();
     }
-  } while (liveOutChanged);
-  ```
+    // 分配可用寄存器
+    auto alloc_res = *availRegs.begin();
+    func.AllocationResult.insert(make_pair(varIndex, alloc_res));
+    availRegs.erase(alloc_res);
+    break;
+  }
+}
+{% endhighlight %}
 
-* 使用enum来实现对指令、寄存器等的编号
+</details>
 
-  ```cpp
-  enum REGs {
-    r0,  r1,  r2,  r3,  r4,  r5,  r6,  r7,  r8,  r9, r10, r11, r12,  sp,  lr,  pc,
-    s0,  s1,  s2,  s3,  s4,  s5,  s6,  s7,  s8,  s9, s10, s11, s12, s13, s14, s15,
-    s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26, s27, s28, s29, s30, s31,
-    SPILL, NOALLOC
-  };
-  static enum AsmBranchType{LT, GE, LE, GT, EQ, NE, AlwaysTrue, AlwaysFalse} b_type;
-  #define REVERSED_BRANCH_TYPE(_BT) ((AsmBranchType)(((char)_BT & 0xfe) | (~(char)_BT & 1)))
-  ```
+<details>
+  <summary><a>生成变量的活跃信息</a></summary>
 
-* 使用LUT高效查找把32位整数拆分成arm中Operand2的最优方式
+{% highlight cpp %}
+for (auto &&bbPtr : functionPtr->all_blocks) {
+  for (auto &&instPtr : bbPtr->basic_block) {
+    vector <int32_t> src_regids;
+    int32_t dst_regid = INT32_MIN;
+    ProcessInst(src_regids, dst_regid, instPtr);
+    for (auto &&src_regid : src_regids)
+      if (bbPtr->LiveDef.find(src_regid) == bbPtr->LiveDef.end())
+        bbPtr->LiveUse.insert(src_regid);
+    if (dst_regid != INT32_MIN)
+      bbPtr->LiveDef.insert(dst_regid);
+  }
+}
+bool liveOutChanged;
+do {
+  liveOutChanged = false;
+  for (auto &&it = functionPtr->all_blocks.rbegin();
+      it != functionPtr->all_blocks.rend();
+      ++it) {
+    auto &&bPtr = *it;
+    size_t oldSiz = bPtr->LiveOut.size();
+    bPtr->LiveOut.clear();
+    for (auto &&sPair : bPtr->succs) {
+        auto &&sPtr = sPair.second;
+        bPtr->LiveOut.insert(sPtr->LiveIn.begin(), sPtr->LiveIn.end());
+    }
+    if (!liveOutChanged && bPtr->LiveOut.size() != oldSiz)
+        liveOutChanged = true;
+    bPtr->LiveIn.clear();
+    set_difference(bPtr->LiveOut.begin(),  bPtr->LiveOut.end(),
+                    bPtr->LiveDef.begin(),  bPtr->LiveDef.end(),
+                    inserter(bPtr->LiveIn, bPtr->LiveIn.begin()));
+    bPtr->LiveIn.insert(bPtr->LiveUse.begin(), bPtr->LiveUse.end());
+  }
+} while (liveOutChanged);
+{% endhighlight %}
 
-  ```cpp
-  const uint32_t operand2_mask_unsigned[] = {
-    0x000000ff, 0xc000003f, 0xf000000f, 0xfc000003,
-    0xff000000, 0x3fc00000, 0x0ff00000, 0x03fc0000,
-    0x00ff0000, 0x003fc000, 0x000ff000, 0x0003fc00,
-    0x0000ff00, 0x00003fc0, 0x00000ff0, 0x000003fc
-  };
-  vector<int32_t> SplitInt(int32_t to_split) {
-    const int n = 16, w = 4;
-    const int32_t *mask = (const int32_t *)operand2_mask_unsigned;
-    /* ... */
-    for (int i = 0; i < n - 2 * w; ++i)
-      for (int j = i + w; j < std::min(i + n - 2 * w + 1, n - w); ++j)
-        for (int k = j + w; k < std::min(i + n - w + 1, n); ++k)
-          if ((to_split & (mask[i] | mask[j] | mask[k])) == to_split)
-            return {to_split & mask[i], to_split & mask[j], to_split & mask[k]};
-    return {to_split & mask[0], to_split & mask[w], to_split & mask[2 * w], to_split & mask[3 * w]};
-  }
-  ```
+</details>
 
-* 对于与2的次幂相关的乘除模运算优化
+<details>
+  <summary><a>使用enum来实现对指令、寄存器等的编号</a></summary>
 
-  ```cpp
-  if (__builtin_popcount(src2.val.i) == 1) { // 2, 4, 8, 16...
-    asm_insts.push_back(AsmCode(AsmInst::LSL, {Param(r), src1, Param(ffs(src2.val.i) - 1)}, indent));
-    return;
-  }
-  else if (__builtin_popcount(src2.val.i - 1) == 1) { // 3, 5, 9, 17, 33...
-    asm_insts.push_back(AsmCode((src2.val.i - 1 < 0) ? AsmInst::SUB : AsmInst::ADD, {Param(r), src1, src1, Param(Param::Str, LSL_HASHTAG_NUMBER(ffs(src2.val.i - 1) - 1))}, indent));
-    return;
-  }
-  else if (__builtin_popcount(src2.val.i + 1) == 1) { // 7, 15, 31...
-    asm_insts.push_back(AsmCode(AsmInst::RSB, {Param(r), src1, src1, Param(Param::Str, LSL_HASHTAG_NUMBER(ffs(src2.val.i + 1) - 1))}, indent));
-    return;
-  }
-  else if (__builtin_popcount(src2.val.i) == 2) { // 6, 10, 18, 34, 66, 320, 8320...
-    /* ...... */
-  }
-  else if (__builtin_popcount(1 - src2.val.i) == 1) { // -3, -7, -15, -31...
-    /* ...... */
-  }
-  else if (__builtin_popcount(- 1 - src2.val.i) == 1) { // -5, -9, -17, -33...
-    /* ...... */
-  }
-  else if (__builtin_popcount((1 << (32 - __builtin_clz(abs(src2.val.i)))) - abs(src2.val.i)) == 1) { // +-14, +-28, +-30, +-56, +-60...
-    /* ...... */
-  }
-  ```
+{% highlight cpp %}
+enum REGs {
+  r0,  r1,  r2,  r3,  r4,  r5,  r6,  r7,  r8,  r9, r10, r11, r12,  sp,  lr,  pc,
+  s0,  s1,  s2,  s3,  s4,  s5,  s6,  s7,  s8,  s9, s10, s11, s12, s13, s14, s15,
+  s16, s17, s18, s19, s20, s21, s22, s23, s24, s25, s26, s27, s28, s29, s30, s31,
+  SPILL, NOALLOC
+};
+static enum AsmBranchType{LT, GE, LE, GT, EQ, NE, AlwaysTrue, AlwaysFalse} b_type;
+#define REVERSED_BRANCH_TYPE(_BT) ((AsmBranchType)(((char)_BT & 0xfe) | (~(char)_BT & 1)))
+{% endhighlight %}
+
+</details>
+
+<details>
+  <summary><a>使用LUT高效查找把32位整数拆分成arm中Operand2的最优方式</a></summary>
+
+{% highlight cpp %}
+const uint32_t operand2_mask_unsigned[] = {
+  0x000000ff, 0xc000003f, 0xf000000f, 0xfc000003,
+  0xff000000, 0x3fc00000, 0x0ff00000, 0x03fc0000,
+  0x00ff0000, 0x003fc000, 0x000ff000, 0x0003fc00,
+  0x0000ff00, 0x00003fc0, 0x00000ff0, 0x000003fc
+};
+vector<int32_t> SplitInt(int32_t to_split) {
+  const int n = 16, w = 4;
+  const int32_t *mask = (const int32_t *)operand2_mask_unsigned;
+  /* ... */
+  for (int i = 0; i < n - 2 * w; ++i)
+    for (int j = i + w; j < std::min(i + n - 2 * w + 1, n - w); ++j)
+      for (int k = j + w; k < std::min(i + n - w + 1, n); ++k)
+        if ((to_split & (mask[i] | mask[j] | mask[k])) == to_split)
+          return {to_split & mask[i], to_split & mask[j], to_split & mask[k]};
+  return {to_split & mask[0], to_split & mask[w], to_split & mask[2 * w], to_split & mask[3 * w]};
+}
+{% endhighlight %}
+
+</details>
+
+<details>
+  <summary><a>对于与2的次幂相关的乘除模运算优化</a></summary>
+
+{% highlight cpp %}
+if (__builtin_popcount(src2.val.i) == 1) { // 2, 4, 8, 16...
+  asm_insts.push_back(AsmCode(AsmInst::LSL, {Param(r), src1, Param(ffs(src2.val.i) - 1)}, indent));
+  return;
+}
+else if (__builtin_popcount(src2.val.i - 1) == 1) { // 3, 5, 9, 17, 33...
+  asm_insts.push_back(AsmCode((src2.val.i - 1 < 0) ? AsmInst::SUB : AsmInst::ADD, {Param(r), src1, src1, Param(Param::Str, LSL_HASHTAG_NUMBER(ffs(src2.val.i - 1) - 1))}, indent));
+  return;
+}
+else if (__builtin_popcount(src2.val.i + 1) == 1) { // 7, 15, 31...
+  asm_insts.push_back(AsmCode(AsmInst::RSB, {Param(r), src1, src1, Param(Param::Str, LSL_HASHTAG_NUMBER(ffs(src2.val.i + 1) - 1))}, indent));
+  return;
+}
+else if (__builtin_popcount(src2.val.i) == 2) { // 6, 10, 18, 34, 66, 320, 8320...
+  /* ...... */
+}
+else if (__builtin_popcount(1 - src2.val.i) == 1) { // -3, -7, -15, -31...
+  /* ...... */
+}
+else if (__builtin_popcount(- 1 - src2.val.i) == 1) { // -5, -9, -17, -33...
+  /* ...... */
+}
+else if (__builtin_popcount((1 << (32 - __builtin_clz(abs(src2.val.i)))) - abs(src2.val.i)) == 1) { // +-14, +-28, +-30, +-56, +-60...
+  /* ...... */
+}
+{% endhighlight %}
+
+</details>
