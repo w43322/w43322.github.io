@@ -79,26 +79,6 @@ main_block_5:
 
 &emsp;&emsp;这里展示的只是一个很简单的例子，该语法还支持函数调用、浮点、数组、指针等功能。[详细语法定义](https://gitlab.eduxiji.net/nscscc/compiler2022/-/blob/master/SysY2022%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89-V1.pdf)
 
-## 答辩PPT
-
-![](./ppt1.SVG)
-
-![](./ppt2.SVG)
-
-![](./ppt3.SVG)
-
-![](./ppt4.SVG)
-
-![](./ppt5.SVG)
-
-![](./ppt6.SVG)
-
-![](./ppt7.SVG)
-
-![](./ppt8.SVG)
-
-![](./ppt9.SVG)
-
 ## 实现细节
 
 <details>
@@ -263,3 +243,23 @@ else if (__builtin_popcount((1 << (32 - __builtin_clz(abs(src2.val.i)))) - abs(s
 {% endhighlight %}
 
 </details>
+
+## 答辩PPT
+
+![](./ppt1.SVG)
+
+![](./ppt2.SVG)
+
+![](./ppt3.SVG)
+
+![](./ppt4.SVG)
+
+![](./ppt5.SVG)
+
+![](./ppt6.SVG)
+
+![](./ppt7.SVG)
+
+![](./ppt8.SVG)
+
+![](./ppt9.SVG)
