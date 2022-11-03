@@ -9,21 +9,73 @@ github:
 
 ---
 
-## 技术栈
-
-* C++
-* Arm汇编
-* Antlr
-* Linux
-* git
-
 ## 关于
 
 &emsp;&emsp;本项目为2022全国大学生计算机系统能力大赛编译系统设计赛(华为毕昇杯)参赛作品，开发周期为2022年6月至2022年8月。最终该作品在全国总决赛中获得三等奖(特等、一等、二等奖共9支队伍，共153支队伍参赛)。在多数用例中，该作品的优化能力与gcc -O1类似。笔者在团队中主要负责编译器后端(IR至汇编)和部分优化。
 
+## 技术栈
+
+* C++
+* Arm汇编
+* llvm
+* Antlr
+* Linux
+* git
+* cmake
+
 ## Demo
 
+<table>
+  <tr>
+    <th>源程序</th>
+    <th>汇编</th>
+  </tr>
+  <tr>
+    <td style="text-align: left;">
 
+{% highlight c %}
+int main() {
+    int a, b;
+    a = 070;
+    b = 0x4;
+    a = a - - 4 + + b;
+    if (+-!!!a) {
+        a = - - -1;
+    }
+    else {
+        a = 0 + + b;
+    }
+    putint(a);
+    return 0;
+}
+{% endhighlight %}
+
+    </td>
+    <td style="text-align: left;">
+
+{% highlight c %}
+.text
+.global main
+main: 
+main_push_lr: 
+    push {lr}
+    sub sp, sp, #4
+main_block_1: 
+     // br label %Block5
+    /*b main_block_5*/
+main_block_5: 
+     // call void @putint(i32 4)
+    mov r0, #4
+    bl putint
+     // ret i32 0
+    mov r0, #0
+    add sp, sp, #4
+    pop {pc}
+{% endhighlight %}
+
+    </td>
+  </tr>
+</table>
 
 ## 答辩PPT
 
