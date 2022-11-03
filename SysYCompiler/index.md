@@ -53,7 +53,7 @@ int main() {
     </td>
     <td style="text-align: left;">
 
-{% highlight c %}
+{% highlight cpp %}
 .text
 .global main
 main: 
@@ -76,6 +76,8 @@ main_block_5:
     </td>
   </tr>
 </table>
+
+&emsp;&emsp;这里展示的只是一个很简单的例子，该语法还支持函数调用、浮点、数组、指针等功能。[详细语法定义](https://gitlab.eduxiji.net/nscscc/compiler2022/-/blob/master/SysY2022%E8%AF%AD%E8%A8%80%E5%AE%9A%E4%B9%89-V1.pdf)
 
 ## 答辩PPT
 
