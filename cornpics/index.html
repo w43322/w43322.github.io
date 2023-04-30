@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>CornPics</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.7/photoswipe.min.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/masonry/4.2.2/masonry.pkgd.min.js"></script>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <img src="https://static.pornpics.com/style/img/logo-w.svg" alt="CornPics" class="logo">
+      <div class="search-form">
+        <input type="text" placeholder="Search" class="input search-keywords" value="marica hase">
+        <input type="text" placeholder="Limit" class="input limit" value="20">
+        <input type="text" placeholder="Offset" class="input offset" value="0">
+        <button class="button" id="fetch-new">Fetch New</button>
+        <button class="button" id="fetch-next">Fetch Next</button>
+        <button class="button" id="refresh-layout">Refresh Layout</button>
+      </div>
+    </div>
+    <div class="nav-container">
+      <div class="url"></div>
+    </div>
+  </header>
+
+  <main>
+    <div class="grid">
+    </div>
+  </main>
+
+  <script type="module">
+    import PhotoSwipe from 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.7/photoswipe.esm.min.js'
+
+    const grid = $('.grid').masonry({
+      itemSelector: '.grid-item',
+      fitWidth: true
+    });
+
+    async function get_images(url) {
+      const image_list = [];
+      await new Promise((resolve, reject) => {
+        $.ajax({
+          url: url,
+          success: function (data) {
+            const images = $(data).find("#main ul li a");
+            images.each(function () {
+              const src = $(this).attr('href');
+              const [width, height] = $(this).attr('data-size').split('x');
+              image_list.push({
+                src: src,
+                width: width,
+                height: height
+              });
+            });
+            resolve();
+          },
+          error: function (jqXHR, textStatus, errorThrown) {
+            reject(new Error("Error fetching images: " + errorThrown));
+          },
+        });
+      });
+      return { dataSource: image_list };
+    }
+
+    function clear_galleries() {
+      grid.masonry('remove', grid.find('.grid-item'));
+      grid.empty();
+    }
+
+    function get_galleries(url) {
+      $.ajax({
+        url: url,
+        success: function(data) {
+          const processed_data = $.parseJSON(data);
+          processed_data.forEach(element => {
+            const img = $('<img>').attr('src', element.t_url_460)
+                                  .attr('alt', element.desc)
+                                  .on('click', function() {
+                                    (async () => {
+                                      const pswp = new PhotoSwipe(await get_images(element.g_url));
+                                      pswp.init();
+                                    })();
+                                  });
+            const grid_item = $('<div>').addClass('grid-item')
+                                        .append(img);
+            grid.append(grid_item)
+                .masonry('appended', grid_item);
+          });
+        }
+      });
+    }
+
+    function get_url() {
+      const prefix = 'https://www.pornpics.com/search/srch.php?';
+      const params = {
+        q: $('.search-keywords').val(),
+        limit: $('.limit').val(),
+        offset: $('.offset').val()
+      };
+      const suffix = Object.keys(params)
+          .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
+          .join('&');
+      const url = prefix + suffix;
+      $('.url').text(url);
+      return url;
+    }
+
+    $('#fetch-new').on('click', function() {
+      $('.offset').val('0')
+      clear_galleries();
+      get_galleries(get_url());
+    });
+
+    $('#fetch-next').on('click', function() {
+      const oldval = parseInt($('.offset').val());
+      const delta = parseInt($('.limit').val());
+      $('.offset').val(oldval + delta);
+      clear_galleries();
+      get_galleries(get_url());
+    });
+
+    $('#refresh-layout').on('click', function() {
+      grid.masonry('layout');
+    });
+
+  </script>
+</body>
+</html>
