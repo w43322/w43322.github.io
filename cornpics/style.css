@@ -76,3 +76,41 @@ html, body {
   background-color: #444;
 }
 
+.info-row {
+  display: flex;
+  align-items: center;
+}
+
+.info-title {
+  white-space: nowrap;
+}
+
+.gallery-title-container {
+  display: flex;
+  justify-content: center;
+}
+
+.gallery-title {
+  white-space: nowrap;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.gallery-title::-webkit-scrollbar {
+  display: none;
+}
+
+.info-button-container {
+  display: flex;
+  overflow-x: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.info-button-container::-webkit-scrollbar {
+  display: none;
+}
+
+.info-button {
+  white-space: nowrap;
+}
+

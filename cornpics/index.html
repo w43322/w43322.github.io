@@ -41,7 +41,8 @@
     async function get_inner(url) {
       const image_list = [];
       const data = await $.ajax({url: url});
-      const image_elements = $(data).find("#main ul li a");
+      const image_elements = $(data).find('#main ul li a');
+      const title_str = $(data).find('.title-section h1').text();
       image_elements.each(function () {
         const src = $(this).attr('href');
         const [width, height] = $(this).attr('data-size').split('x');
@@ -52,20 +53,20 @@
         });
       });
       const info_dict = {
-        Channel: $(data).find(".gallery-info__item").eq(0).find("a").map(function () {
+        'Channel:': $(data).find(".gallery-info__item").eq(0).find("a").map(function () {
           return $(this).text();
         }).get(),
-        Models: $(data).find(".gallery-info__item").eq(1).find("a").map(function () {
+        'Models:': $(data).find(".gallery-info__item").eq(1).find("a").map(function () {
           return $(this).text();
         }).get(),
-        Categories: $(data).find(".gallery-info__item.tags").eq(0).find("a").map(function () {
+        'Categories:': $(data).find(".gallery-info__item.tags").eq(0).find("a").map(function () {
           return $(this).text();
         }).get(),
-        TagsList: $(data).find(".gallery-info__item.tags").eq(1).find("a").map(function () {
+        'Tags List': $(data).find(".gallery-info__item.tags").eq(1).find("a").map(function () {
           return $(this).text();
         }).get(),
       }
-      return [info_dict, image_list];
+      return [title_str, info_dict, image_list];
     }
 
     function get_info(info_dict) {
@@ -75,7 +76,7 @@
           continue;
         }
         const info_title = $('<div>').addClass('info-title').text(key);
-        const info_buttons = $('<div>').addClass('info-buttons');
+        const info_buttons = $('<div>').addClass('info-button-container');
         element_list.forEach(element => {
           info_buttons.append(
             $('<button>').addClass('info-button').text(element).on('click', () => {
@@ -93,7 +94,13 @@
       const data = await $.ajax({url: url});
       const processed_data = $.parseJSON(data);
       processed_data.forEach(async (element) => {
-        const [info_dict, image_list] = await get_inner(element.g_url);
+        const [title_str, info_dict, image_list] = await get_inner(element.g_url);
+        const title = $('<div>')
+            .addClass('gallery-title-container')
+            .append(
+              $('<div>').addClass('gallery-title')
+                        .text(title_str)
+            );
         const img = $('<img>')
             .attr('src', element.t_url_460)
             .attr('alt', element.desc)
@@ -107,6 +114,7 @@
         const info = get_info(info_dict);
         const grid_item = $('<div>')
             .addClass('grid-item')
+            .append(title)
             .append(img)
             .append(info);
         grid.append(grid_item).masonry('appended', grid_item);
