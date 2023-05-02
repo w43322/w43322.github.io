@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>CornPics</title>
   <link rel="stylesheet" href="style.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.7/photoswipe.min.css">
@@ -13,11 +14,16 @@
     <div class="header-container">
       <img src="https://static.pornpics.com/style/img/logo-w.svg" alt="CornPics" class="logo">
       <div class="search-form">
-        <div class="input-container"></div>
-        <div class="search-button-container">
-          <button class="button" id="go">Go</button>
-          <button class="button" id="next-page">Next Page</button>
+        <div class="dropdown">
+          <select id="site-switch">
+            <option value="pornpics">PornPics</option>
+            <option value="pichunter">PicHunter</option>
+            <option value="yespornpics">YesPornPics</option>
+            <option value="babesource">BabeSource</option>
+          </select>
         </div>
+        <div class="input-container"></div>
+        <button class="button" id="go">Go</button>
       </div>
     </div>
     <div class="nav-container">
@@ -26,9 +32,12 @@
   </header>
 
   <main>
-    <div class="grid">
-    </div>
+    <div class="grid"></div>
   </main>
+
+  <footer>
+    <button class="button" id="next-page" hidden>Next Page</button>
+  </footer>
 
   <script type="module">
     import PhotoSwipe from 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.7/photoswipe.esm.min.js'
@@ -53,7 +62,6 @@
     class PornPics extends Site {
       constructor() {
         super();
-        $('head').append($('<base>').attr('href', 'https://www.pornpics.com'));
         this.search_keywords = '';
         this.search_keywords_elem = $('<input>').addClass('input')
                                                 .addClass('search_keywords')
@@ -236,7 +244,96 @@
       }
     }
 
-    const site = new YesPornPics();
+    class BabeSource extends Site {
+      constructor() {
+        super();
+        this.key = '';
+        this.key_elem = $('<input>').addClass('input')
+                                    .addClass('key')
+                                    .attr('type', 'text');
+        $('.input-container').append(this.key_elem);
+        this.page = 1;
+        this.search_mode = true;
+        this.jump_url = '';
+      }
+      get_url() {
+        // TODO: sort by views
+        var res; 
+        if (this.search_mode) {
+          this.key = this.key_elem.val();
+          res = `https://babesource.com/search/photos/` + 
+                `${encodeURIComponent(this.key)}/`;
+        } else {
+          this.search_mode = true;
+          res = this.jump_url;
+        }
+        res += `page${this.page}.html`;
+        return res;
+      }
+      parse_galleries(data, callback) {
+        const galleries = $(data).find('.main-content__card-link');
+        galleries.each(async function () {
+            callback(this);
+        });
+      }
+      get_thumb_info(element) {
+        return [$(element).attr('href'),
+                $(element).find('picture img').attr('data-src'),
+                $(element).find('picture img').attr('alt')];
+      }
+      get_title_str(data) {
+        return '';
+      }
+      get_info_dict(data) {
+        return {
+          'Channel:': $(data).find('div.aside-setting__chapter:has(h4:contains("Paysite")) a'),
+          'Models:': $(data).find('div.aside-setting__chapter:has(h4:contains("Models")) a'),
+          'Categories:': $(data).find('div.aside-setting__chapter:has(h4:contains("Categories")) a'),
+          'Tags List:': $(data).find('.aside-setting__category-link'),
+        };
+      }
+      get_image_elements(data) {
+        return $(data).find('.slideshowGalleryImage');
+      }
+      get_image(element) {
+        return {
+          src: $(element).attr('href'),
+        };
+      }
+      set_vars(element) {
+        this.key_elem.val('');
+        this.jump_url = $(element).attr('href');
+        this.search_mode = false;
+      }
+      set_first_page() {
+        this.page = 1;
+      }
+      set_next_page() {
+        ++this.page;
+      }
+    }
+
+    let site = new PornPics();
+    function switch_site(site_name) {
+      switch (site_name) {
+        case 'pornpics':
+          site = new PornPics();
+          break;
+        case 'pichunter':
+          site = new PicHunter();
+          break;
+        case 'yespornpics':
+          site = new YesPornPics();
+          break;
+        case 'babesource':
+          site = new BabeSource();
+          break;
+        default:
+          site = new PornPics();
+          break;
+      }
+      clear_galleries();
+    }
 
     const grid = $('.grid').masonry({
       itemSelector: '.grid-item',
@@ -311,6 +408,7 @@
     function clear_galleries() {
       grid.masonry('remove', grid.find('.grid-item'));
       grid.empty();
+      $('#next-page').attr('hidden');
     }
 
     function update_url() {
@@ -324,6 +422,7 @@
       clear_galleries();
       get_galleries(update_url());
       window.scrollTo(0, 0);
+      $('#next-page').removeAttr('hidden');
     }
 
     $('#go').on('click', function() {
@@ -334,6 +433,11 @@
       site.set_next_page();
       clear_galleries();
       get_galleries(update_url());
+    });
+
+    $('#site-switch').on('change', function () {
+      const selected_site = $(this).val();
+      switch_site(selected_site);
     });
   </script>
 </body>

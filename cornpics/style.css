@@ -8,6 +8,12 @@ html, body {
   scroll-behavior: smooth;
 }
 
+footer {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
 .pswp img {
   object-fit: contain;
 }
@@ -56,28 +62,6 @@ html, body {
 .search-form {
   display: flex;
   align-items: center;
-}
-
-.input {
-  padding: 0.5rem;
-  font-size: 1rem;
-  border: 1px solid #ccc;
-  border-radius: 4px 0 0 4px;
-  outline: none;
-}
-
-.button {
-  padding: 0.5rem;
-  font-size: 1rem;
-  background-color: #555;
-  color: #fff;
-  border: 1px solid #555;
-  border-radius: 0 4px 4px 0;
-  cursor: pointer;
-}
-
-.search-button:hover {
-  background-color: #444;
 }
 
 .info-row {
