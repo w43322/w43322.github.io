@@ -13,7 +13,11 @@
     <div class="header-container">
       <img src="https://static.pornpics.com/style/img/logo-w.svg" alt="CornPics" class="logo">
       <div class="search-form">
-        <button class="button" id="fetch-next">Fetch Next</button>
+        <div class="input-container"></div>
+        <div class="search-button-container">
+          <button class="button" id="go">Go</button>
+          <button class="button" id="next-page">Next Page</button>
+        </div>
       </div>
     </div>
     <div class="nav-container">
@@ -31,40 +35,55 @@
 
     class Site {
       constructor() {
+        $('.input-container').empty();
+      }
+      get_url() {}
+      get_json_array(data) {}
+      get_thumb_info(element) {}
+      get_title_str(data) {}
+      get_info_dict(data) {}
+      get_image_elements(data) {}
+      get_image(element) {}
+      set_vars(element) {}
+      set_first_page() {}
+      set_next_page() {}
+    }
+
+    class PornPics extends Site {
+      constructor() {
+        super();
         this.search_keywords = '';
         this.search_keywords_elem = $('<input>').addClass('input')
                                                 .addClass('search_keywords')
                                                 .attr('type', 'text');
-        $('.search-form').append(this.search_keywords_elem);
+        $('.input-container').append(this.search_keywords_elem);
         this.latest = false;
         this.limit = 20;
         this.offset = 0;
       }
       get_url() {
-        this.search_keywords = $('.search_keywords').val();
+        this.search_keywords = this.search_keywords_elem.val();
         return `https://www.pornpics.com/search/srch.php` + 
                `?q=${encodeURIComponent(this.search_keywords)}` +
                `${this.latest ? '&date=latest' : ''}` +
                `&limit=${this.limit}` +
                `&offset=${this.offset}`;
       }
+      get_json_array(data) {
+        return $.parseJSON(data);
+      }
+      get_thumb_info(element) {
+        return [element.g_url, element.t_url_460, element.desc];
+      }
       get_title_str(data) {
         return $(data).find('.title-section h1').text();
       }
       get_info_dict(data) {
         return {
-          'Channel:': $(data).find(".gallery-info__item").eq(0).find("a").map(function () {
-            return $(this).text();
-          }).get(),
-          'Models:': $(data).find(".gallery-info__item").eq(1).find("a").map(function () {
-            return $(this).text();
-          }).get(),
-          'Categories:': $(data).find(".gallery-info__item.tags").eq(0).find("a").map(function () {
-            return $(this).text();
-          }).get(),
-          'Tags List': $(data).find(".gallery-info__item.tags").eq(1).find("a").map(function () {
-            return $(this).text();
-          }).get(),
+          'Channel:': $(data).find(".gallery-info__item").eq(0).find("a"),
+          'Models:': $(data).find(".gallery-info__item").eq(1).find("a"),
+          'Categories:': $(data).find(".gallery-info__item.tags").eq(0).find("a"),
+          'Tags List': $(data).find(".gallery-info__item.tags").eq(1).find("a")
         };
       }
       get_image_elements(data) {
@@ -79,10 +98,8 @@
           height: height
         };
       }
-      set_vars(kws) {
-        this.search_keywords = kws;
-        this.search_keywords_elem.val(kws);
-        this.search_keywords_elem.trigger('change');
+      set_vars(element) {
+        this.search_keywords_elem.val($(element).text());
       }
       set_first_page() {
         this.offset = 0;
@@ -92,7 +109,73 @@
       }
     }
 
-    const site = new Site();
+    class PicHunter extends Site {
+      constructor() {
+        super();
+        $('head').append($('<base>').attr('href', 'https://pichunter.com'));
+        this.type = '';
+        this.type_elem = $('<input>').addClass('input')
+                                     .addClass('type')
+                                     .attr('type', 'text');
+        this.specifier = '';
+        this.specifier_elem = $('<input>').addClass('input')
+                                          .addClass('specifier')
+                                          .attr('type', 'text');
+        $('.input-container').append(this.type_elem).append(this.specifier_elem);
+        this.page = 0;
+      }
+      get_url() {
+        // TODO: add support for 'search' type
+        this.type = this.type_elem.val();
+        this.specifier = this.specifier_elem.val();
+        return `https://www.pichunter.com/` + 
+               `${this.type}/` +
+               `${this.type == 'models' ? '' : 'all/'}` +
+               `${encodeURIComponent(this.specifier)}/` +
+               `${this.type == 'models' ? 'photos/' : ''}` +
+               `${this.page}/format/json`;
+      }
+      get_json_array(data) {
+        return data.thumbs;
+      }
+      get_thumb_info(element) {
+        return [element.galUrl, element.src, element.title2];
+      }
+      get_title_str(data) {
+        return $(data).find('h1').text();
+      }
+      get_info_dict(data) {
+        const tags = $(data).find('.tagCloud');
+        return {
+          'Channel:': tags.find('li.g_site a'),
+          'Models:': tags.find('li.g_star a'),
+          'Tags List': tags.find("li:not([class]) a"),
+        };
+      }
+      get_image_elements(data) {
+        return $(data).find('.flex-images figure a');
+      }
+      get_image(element) {
+        return {
+          src: $(element).attr('href'),
+          width: $(element).find('img').attr('xow'),
+          height: $(element).find('img').attr('xoh')
+        };
+      }
+      set_vars(element) {
+        const [type, specifier] = $(element).attr('href').substr(1).split('/');
+        this.type_elem.val(type);
+        this.specifier_elem.val(specifier);
+      }
+      set_first_page() {
+        this.page = 1;
+      }
+      set_next_page() {
+        ++this.page;
+      }
+    }
+
+    const site = new PornPics();
 
     const grid = $('.grid').masonry({
       itemSelector: '.grid-item',
@@ -113,16 +196,17 @@
 
     function get_info(info_dict) {
       const info = $('<div>').addClass('info');
-      for (const [key, element_list] of Object.entries(info_dict)) {
-        if (element_list.length === 0) {
+      for (const [key, elements] of Object.entries(info_dict)) {
+        if (elements.length === 0) {
           continue;
         }
         const info_title = $('<div>').addClass('info-title').text(key);
         const info_buttons = $('<div>').addClass('info-button-container');
-        element_list.forEach(element => {
+        elements.each(function () {
           info_buttons.append(
-            $('<button>').addClass('info-button').text(element).on('click', () => {
-              site.set_vars(element);
+            $('<button>').addClass('info-button').text($(this).text()).on('click', () => {
+              site.set_vars(this);
+              update_page();
             })
           );
         });
@@ -134,9 +218,10 @@
 
     async function get_galleries(url) {
       const data = await $.ajax({url: url});
-      const processed_data = $.parseJSON(data);
-      processed_data.forEach(async (element) => {
-        const [title_str, info_dict, image_list] = await get_inner(element.g_url);
+      const json_array = site.get_json_array(data);
+      json_array.forEach(async (element) => {
+        const [gallery_url, thumbnail_src, thumbnail_alt] = site.get_thumb_info(element);
+        const [title_str, info_dict, image_list] = await get_inner(gallery_url);
         const title = $('<div>')
             .addClass('gallery-title-container')
             .append(
@@ -144,8 +229,8 @@
                         .text(title_str)
             );
         const img = $('<img>')
-            .attr('src', element.t_url_460)
-            .attr('alt', element.desc)
+            .attr('src', thumbnail_src)
+            .attr('alt', thumbnail_alt)
             .on('click', () => {
               const pswp = new PhotoSwipe({dataSource: image_list});
               pswp.init();
@@ -174,14 +259,18 @@
       return url;
     }
 
-    $('.input').on('change', function() {
+    function update_page() {
       site.set_first_page();
       clear_galleries();
       get_galleries(update_url());
       window.scrollTo(0, 0);
+    }
+
+    $('#go').on('click', function() {
+      update_page();
     });
 
-    $('#fetch-next').on('click', function() {
+    $('#next-page').on('click', function() {
       site.set_next_page();
       clear_galleries();
       get_galleries(update_url());
