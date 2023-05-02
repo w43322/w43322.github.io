@@ -83,7 +83,7 @@
           'Channel:': $(data).find(".gallery-info__item").eq(0).find("a"),
           'Models:': $(data).find(".gallery-info__item").eq(1).find("a"),
           'Categories:': $(data).find(".gallery-info__item.tags").eq(0).find("a"),
-          'Tags List': $(data).find(".gallery-info__item.tags").eq(1).find("a")
+          'Tags List:': $(data).find(".gallery-info__item.tags").eq(1).find("a")
         };
       }
       get_image_elements(data) {
@@ -149,7 +149,7 @@
         return {
           'Channel:': tags.find('li.g_site a'),
           'Models:': tags.find('li.g_star a'),
-          'Tags List': tags.find("li:not([class]) a"),
+          'Tags List:': tags.find("li:not([class]) a"),
         };
       }
       get_image_elements(data) {
