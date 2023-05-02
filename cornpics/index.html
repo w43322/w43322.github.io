@@ -13,7 +13,6 @@
     <div class="header-container">
       <img src="https://static.pornpics.com/style/img/logo-w.svg" alt="CornPics" class="logo">
       <div class="search-form">
-        <input type="text" placeholder="Search" class="input search-keywords">
         <button class="button" id="fetch-next">Fetch Next</button>
       </div>
     </div>
@@ -30,8 +29,70 @@
   <script type="module">
     import PhotoSwipe from 'https://cdnjs.cloudflare.com/ajax/libs/photoswipe/5.3.7/photoswipe.esm.min.js'
 
-    let LIMIT = 20;
-    let OFFSET = 0;
+    class Site {
+      constructor() {
+        this.search_keywords = '';
+        this.search_keywords_elem = $('<input>').addClass('input')
+                                                .addClass('search_keywords')
+                                                .attr('type', 'text');
+        $('.search-form').append(this.search_keywords_elem);
+        this.latest = false;
+        this.limit = 20;
+        this.offset = 0;
+      }
+      get_url() {
+        this.search_keywords = $('.search_keywords').val();
+        return `https://www.pornpics.com/search/srch.php` + 
+               `?q=${encodeURIComponent(this.search_keywords)}` +
+               `${this.latest ? '&date=latest' : ''}` +
+               `&limit=${this.limit}` +
+               `&offset=${this.offset}`;
+      }
+      get_title_str(data) {
+        return $(data).find('.title-section h1').text();
+      }
+      get_info_dict(data) {
+        return {
+          'Channel:': $(data).find(".gallery-info__item").eq(0).find("a").map(function () {
+            return $(this).text();
+          }).get(),
+          'Models:': $(data).find(".gallery-info__item").eq(1).find("a").map(function () {
+            return $(this).text();
+          }).get(),
+          'Categories:': $(data).find(".gallery-info__item.tags").eq(0).find("a").map(function () {
+            return $(this).text();
+          }).get(),
+          'Tags List': $(data).find(".gallery-info__item.tags").eq(1).find("a").map(function () {
+            return $(this).text();
+          }).get(),
+        };
+      }
+      get_image_elements(data) {
+        return $(data).find('#main ul li a');
+      }
+      get_image(element) {
+        const src = $(element).attr('href');
+        const [width, height] = $(element).attr('data-size').split('x');
+        return {
+          src: src,
+          width: width,
+          height: height
+        };
+      }
+      set_vars(kws) {
+        this.search_keywords = kws;
+        this.search_keywords_elem.val(kws);
+        this.search_keywords_elem.trigger('change');
+      }
+      set_first_page() {
+        this.offset = 0;
+      }
+      set_next_page() {
+        this.offset += this.limit;
+      }
+    }
+
+    const site = new Site();
 
     const grid = $('.grid').masonry({
       itemSelector: '.grid-item',
@@ -41,31 +102,12 @@
     async function get_inner(url) {
       const image_list = [];
       const data = await $.ajax({url: url});
-      const image_elements = $(data).find('#main ul li a');
-      const title_str = $(data).find('.title-section h1').text();
+      const image_elements = site.get_image_elements(data);
+      const title_str = site.get_title_str(data);
       image_elements.each(function () {
-        const src = $(this).attr('href');
-        const [width, height] = $(this).attr('data-size').split('x');
-        image_list.push({
-          src: src,
-          width: width,
-          height: height
-        });
+        image_list.push(site.get_image(this));
       });
-      const info_dict = {
-        'Channel:': $(data).find(".gallery-info__item").eq(0).find("a").map(function () {
-          return $(this).text();
-        }).get(),
-        'Models:': $(data).find(".gallery-info__item").eq(1).find("a").map(function () {
-          return $(this).text();
-        }).get(),
-        'Categories:': $(data).find(".gallery-info__item.tags").eq(0).find("a").map(function () {
-          return $(this).text();
-        }).get(),
-        'Tags List': $(data).find(".gallery-info__item.tags").eq(1).find("a").map(function () {
-          return $(this).text();
-        }).get(),
-      }
+      const info_dict = site.get_info_dict(data);
       return [title_str, info_dict, image_list];
     }
 
@@ -80,7 +122,7 @@
         element_list.forEach(element => {
           info_buttons.append(
             $('<button>').addClass('info-button').text(element).on('click', () => {
-              $('.search-keywords').val(element).trigger('change')
+              site.set_vars(element);
             })
           );
         });
@@ -126,32 +168,23 @@
       grid.empty();
     }
 
-    function get_url() {
-      const prefix = 'https://www.pornpics.com/search/srch.php?';
-      const params = {
-        q: $('.search-keywords').val(),
-        limit: LIMIT,
-        offset: OFFSET
-      };
-      const suffix = Object.keys(params)
-          .map(key => `${encodeURIComponent(key)}=${encodeURIComponent(params[key])}`)
-          .join('&');
-      const url = prefix + suffix;
+    function update_url() {
+      const url = site.get_url();
       $('.url').text(url);
       return url;
     }
 
-    $('.search-keywords').on('change', function() {
-      OFFSET = 0;
+    $('.input').on('change', function() {
+      site.set_first_page();
       clear_galleries();
-      get_galleries(get_url());
+      get_galleries(update_url());
       window.scrollTo(0, 0);
     });
 
     $('#fetch-next').on('click', function() {
-      OFFSET += LIMIT;
+      site.set_next_page();
       clear_galleries();
-      get_galleries(get_url());
+      get_galleries(update_url());
     });
   </script>
 </body>
