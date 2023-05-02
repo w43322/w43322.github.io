@@ -35,10 +35,11 @@
 
     class Site {
       constructor() {
+        $('base').remove();
         $('.input-container').empty();
       }
       get_url() {}
-      get_json_array(data) {}
+      parse_galleries(data, callback) {}
       get_thumb_info(element) {}
       get_title_str(data) {}
       get_info_dict(data) {}
@@ -52,6 +53,7 @@
     class PornPics extends Site {
       constructor() {
         super();
+        $('head').append($('<base>').attr('href', 'https://www.pornpics.com'));
         this.search_keywords = '';
         this.search_keywords_elem = $('<input>').addClass('input')
                                                 .addClass('search_keywords')
@@ -69,8 +71,9 @@
                `&limit=${this.limit}` +
                `&offset=${this.offset}`;
       }
-      get_json_array(data) {
-        return $.parseJSON(data);
+      parse_galleries(data, callback) {
+        const json_array = $.parseJSON(data);
+        json_array.forEach(callback);
       }
       get_thumb_info(element) {
         return [element.g_url, element.t_url_460, element.desc];
@@ -122,7 +125,7 @@
                                           .addClass('specifier')
                                           .attr('type', 'text');
         $('.input-container').append(this.type_elem).append(this.specifier_elem);
-        this.page = 0;
+        this.page = 1;
       }
       get_url() {
         // TODO: add support for 'search' type
@@ -135,8 +138,9 @@
                `${this.type == 'models' ? 'photos/' : ''}` +
                `${this.page}/format/json`;
       }
-      get_json_array(data) {
-        return data.thumbs;
+      parse_galleries(data, callback) {
+        const json_array = data.thumbs;
+        json_array.forEach(callback);
       }
       get_thumb_info(element) {
         return [element.galUrl, element.src, element.title2];
@@ -175,7 +179,64 @@
       }
     }
 
-    const site = new PornPics();
+    class YesPornPics extends Site {
+      constructor() {
+        super();
+        $('head').append($('<base>').attr('href', 'https://yespornpics.com'));
+        this.key = '';
+        this.key_elem = $('<input>').addClass('input')
+                                    .addClass('key')
+                                    .attr('type', 'text');
+        $('.input-container').append(this.key_elem);
+        this.page = 1;
+      }
+      get_url() {
+        this.key = this.key_elem.val();
+        return `https://yespornpics.com/sex/` + 
+               `${encodeURIComponent(this.key)}/` +
+               `${this.page}`;
+      }
+      parse_galleries(data, callback) {
+        const galleries = $(data).find('.gallery a');
+        galleries.each(async function () {
+            callback(this);
+        });
+      }
+      get_thumb_info(element) {
+        return [$(element).attr('href'), $(element).find('img').attr('src'), $(element).find('img').attr('alt')];
+      }
+      get_title_str(data) {
+        return $(data).find('.jpeg a img').attr('alt').slice(0, -5);
+      }
+      get_info_dict(data) {
+        const tags = $(data).find('.gallerytags');
+        return {
+          'Channel:': tags.find('h4 a'),
+          'Models:': tags.find('h5 a'),
+          'Tags List:': tags.find('h6 a'),
+        };
+      }
+      get_image_elements(data) {
+        return $(data).find('.jpeg a');
+      }
+      get_image(element) {
+        return {
+          src: $(element).attr('href'),
+        };
+      }
+      set_vars(element) {
+        const key = $(element).attr('href').split('/')[2];
+        this.key_elem.val(key);
+      }
+      set_first_page() {
+        this.page = 1;
+      }
+      set_next_page() {
+        ++this.page;
+      }
+    }
+
+    const site = new YesPornPics();
 
     const grid = $('.grid').masonry({
       itemSelector: '.grid-item',
@@ -204,7 +265,7 @@
         const info_buttons = $('<div>').addClass('info-button-container');
         elements.each(function () {
           info_buttons.append(
-            $('<button>').addClass('info-button').text($(this).text()).on('click', () => {
+            $('<button>').addClass('info-button').text($(this).text().trim()).on('click', () => {
               site.set_vars(this);
               update_page();
             })
@@ -218,8 +279,7 @@
 
     async function get_galleries(url) {
       const data = await $.ajax({url: url});
-      const json_array = site.get_json_array(data);
-      json_array.forEach(async (element) => {
+      site.parse_galleries(data, async (element) => {
         const [gallery_url, thumbnail_src, thumbnail_alt] = site.get_thumb_info(element);
         const [title_str, info_dict, image_list] = await get_inner(gallery_url);
         const title = $('<div>')

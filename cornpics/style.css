@@ -8,6 +8,10 @@ html, body {
   scroll-behavior: smooth;
 }
 
+.pswp img {
+  object-fit: contain;
+}
+
 .grid {
   margin: 0 auto;
 }
