@@ -28,7 +28,7 @@ github:
             <input value="neu.edu.cn" type="text" id="url-input">
             <button id="convert" onclick="convertOnClick()">获取链接</button>
             <br>
-            <a id="converted-link" href="https://webvpn.neu.edu.cn/http/77726476706e69737468656265737421fef254d222347d1e7d06/">用东北大学WebVPN打开'neu.edu.cn'</a>
+            <a id="converted-link" href="https://webvpn.neu.edu.cn/http/62304135386136393339346365373340bee4b1718fc15393f116/">用东北大学WebVPN打开'neu.edu.cn'</a>
         </div>
     </body>
 </html>
