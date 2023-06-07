@@ -21,15 +21,15 @@ github:
 <html>
     <head>
         <script src="https://cdn.staticfile.org/crypto-js/3.1.9-1/crypto-js.min.js"></script>
-        <script src="webvpn.js"></script>
     </head>
     <body>
         <div style="display: table; margin-right: auto; margin-left: auto;">
             <input value="neu.edu.cn" type="text" id="url-input">
             <button id="convert" onclick="convertOnClick()">获取链接</button>
             <br>
-            <a id="converted-link" href="https://webvpn.neu.edu.cn/http/62304135386136393339346365373340bee4b1718fc15393f116/">用东北大学WebVPN打开'neu.edu.cn'</a>
+            <a id="converted-link"></a>
         </div>
+        <script src="webvpn.js"></script>
     </body>
 </html>
 
