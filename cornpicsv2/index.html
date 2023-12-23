@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Image Scrolling Web App</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="script.js"></script>
+</head>
+<body>
+    <div>
+        <textarea id="config" style="display: none;">{
+            "galleries_pattern": "\"g_url\":\"(.*?)\"",
+            "images_pattern": "<a.*?href='(.*?)'.*?pswp.*?>",
+            "title_pattern": "<h1>(.*?)<\/h1>",
+            "tag_groups": {
+              "📺": "<a.*?channels\/[^\"].*?>(.*?)<\/a>",
+              "👠": "<a.*?pornstars\/[^\"].*?><span>(.*?)<\/span><\/a>",
+              "📚": "<a.*?href='\/[^\/]*?\/'.*?><span>(.*?)<\/span><\/a>",
+              "🏷️": "<a.*?tags\/[^\"].*?><span>(.*?)<\/span><\/a>"
+            },
+            "pagination": {
+              "start": 0,
+              "step": 20
+            },
+            "option": ["", "&date=latest"],
+            "url_template": "https://www.pornpics.com/search/srch.php?q=%k%o&lang=en&limit=20&offset=%p"
+        }</textarea>
+        <input id="keyword" type="text" value="slevie">
+        <input id="current_page" type="text" value="1">
+        <input id="option" type="text" value="0">
+        <button type="button" id="fetch" onclick="upd()">Fetch</button>
+    </div>
+    <div id="rows"></div>
+</body>
+</html>
