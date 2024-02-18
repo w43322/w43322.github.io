@@ -1,0 +1,4 @@
+baseURL = 'https://hazuki.ren/'
+languageCode = 'zh-cn'
+title = 'Hazuki Ren'
+theme = 'hugo-xmin'
